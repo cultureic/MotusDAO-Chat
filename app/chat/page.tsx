@@ -7,15 +7,21 @@ export default function ChatPage() {
   const [role, setRole] = useState<Role>('user');
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<{ role: string; text: string }[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   async function onSend() {
     if (!input.trim()) return;
     const text = input;
     setInput('');
     setMessages((m) => [...m, { role: 'me', text }]);
-    const res = await fetch('/api/chat', { method: 'POST', body: JSON.stringify({ messageText: text, role }) });
-    const data = await res.json();
-    setMessages((m) => [...m, { role: 'ai', text: data.answer ?? 'ok' }]);
+    try {
+      const res = await fetch('/api/chat', { method: 'POST', body: JSON.stringify({ messageText: text, role }) });
+      const data = await res.json();
+      setMessages((m) => [...m, { role: 'ai', text: data.answer ?? 'ok' }]);
+      setError(null);
+    } catch (e) {
+      setError('Failed to reach the chat service.');
+    }
   }
 
   return (
@@ -28,6 +34,9 @@ export default function ChatPage() {
         <span className="opacity-70 text-sm">This is not clinical advice.</span>
       </div>
       <div className="h-[60vh] overflow-y-auto rounded-2xl border p-4 backdrop-blur bg-white/5">
+        {error && (
+          <div className="mb-3 text-red-300">{error}</div>
+        )}
         {messages.map((m, i) => (
           <div key={i} className="py-1">
             <span className="opacity-70 mr-2">{m.role}:</span>
