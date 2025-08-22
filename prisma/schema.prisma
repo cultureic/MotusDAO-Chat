@@ -1,15 +1,96 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
-  output   = "../app/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(uuid())
+  privyDid      String   @unique
+  smartAccount  String   @unique
+  eoa           String?  @unique
+  emailEnc      Bytes?
+  createdAt     DateTime @default(now())
+  hnftTokenId   String?
+  conversations Conversation[]
+  payments      PaymentLog[]
+  consents      Consent[]
+}
+
+model Conversation {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  role      String   @default("user") // 'user' | 'pro'
+  startedAt DateTime @default(now())
+  tags      Json?
+  messages  Message[]
+}
+
+model Message {
+  id             String   @id @default(uuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  role           String
+  summary        String?
+  cipherCid      String?
+  messageHash    String?
+  createdAt      DateTime  @default(now())
+  paymentId      String? @unique
+  payment        PaymentLog? @relation("MessagePayment", fields: [paymentId], references: [id])
+}
+
+model PaymentLog {
+  id                    String   @id @default(uuid())
+  userId                String
+  user                  User     @relation(fields: [userId], references: [id])
+  messageIdRef          String
+  amountDecimal         Decimal  @db.Decimal(36, 18)
+  userOpHash            String?
+  txHash                String?
+  gasSponsorCostDecimal Decimal? @db.Decimal(36, 18)
+  status                String
+  createdAt             DateTime @default(now())
+  message               Message? @relation("MessagePayment")
+}
+
+model Consent {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  policyHash String
+  cidRoot    String
+  expiry     DateTime?
+  active     Boolean  @default(true)
+  createdAt  DateTime @default(now())
+}
+
+model Doc {
+  id        String   @id @default(uuid())
+  title     String
+  source    String
+  namespace String   @default("kb_users") // kb_users | kb_pros
+  createdAt DateTime @default(now())
+  chunks    Chunk[]
+}
+
+model Chunk {
+  id         String   @id @default(uuid())
+  docId      String
+  doc        Doc      @relation(fields: [docId], references: [id])
+  content    String
+  embedding  Unsupported("vector")
+  chunkIndex Int
+  metadata   Json?
+}
+
+model Settings {
+  id                String   @id @default("singleton")
+  systemPrompt_user String
+  systemPrompt_pro  String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
