@@ -9,14 +9,21 @@ const chatPayNativeAbi = parseAbi([
 ]);
 
 export async function POST(req: Request) {
+  let messageId: string;
+  let sender: string;
+  let chatPay: string;
+  let entryPoint: string;
+  let rpcUrl: string;
+  
   try {
-    const { messageId } = await req.json();
+    const body = await req.json();
+    messageId = body.messageId;
     const user = await authUser();
-    const sender = await getUserSmartAccount(user.id);
-    const chatPay = process.env.NEXT_PUBLIC_CHATPAY_NATIVE_ADDRESS_ALFAJORES as `0x${string}`;
+    sender = await getUserSmartAccount(user.id);
+    chatPay = process.env.NEXT_PUBLIC_CHATPAY_NATIVE_ADDRESS_ALFAJORES as `0x${string}`;
     const priceWei = BigInt(process.env.PRICE_PER_MESSAGE_NATIVE_WEI || "2000000000000000");
-    const entryPoint = process.env.ENTRYPOINT_ADDRESS_ALFAJORES as `0x${string}` || "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789";
-    const rpcUrl = process.env.ALFAJORES_RPC_URL || "https://alfajores-forno.celo-testnet.org";
+    entryPoint = process.env.ENTRYPOINT_ADDRESS_ALFAJORES as `0x${string}` || "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789";
+    rpcUrl = process.env.ALFAJORES_RPC_URL || "https://alfajores-forno.celo-testnet.org";
 
     console.log('Pay API: Starting payment for', {
       messageId,
@@ -52,7 +59,7 @@ export async function POST(req: Request) {
       return Response.json({ 
         ok: true, 
         userOpHash: r.userOpHash,
-        txHash: r.txHash,
+        txHash: r.txHash || r.userOpHash, // Use UserOp hash as tx hash if no specific tx hash
         message: r.message,
         amountWei: priceWei.toString() 
       });
@@ -67,14 +74,14 @@ export async function POST(req: Request) {
           value: priceWei, chainId: celoAlfajores.id, nonce: nonce.toString(), feeBumpBps: 1500 // +15%
         });
         console.log('Pay API: Retry successful:', r2);
-        return Response.json({ 
-          ok: true, 
-          retried: true, 
-          userOpHash: r2.userOpHash,
-          txHash: r2.txHash,
-          message: r2.message,
-          amountWei: priceWei.toString() 
-        });
+              return Response.json({ 
+        ok: true, 
+        retried: true, 
+        userOpHash: r2.userOpHash,
+        txHash: r2.txHash || r2.userOpHash, // Use UserOp hash as tx hash if no specific tx hash
+        message: r2.message,
+        amountWei: priceWei.toString() 
+      });
       }
       throw e;
     }
@@ -84,11 +91,11 @@ export async function POST(req: Request) {
       error: error.message,
       stack: error.stack,
       details: {
-        messageId,
-        sender,
-        chatPay,
-        entryPoint,
-        rpcUrl: rpcUrl
+        messageId: messageId || 'unknown',
+        sender: sender || 'unknown',
+        chatPay: chatPay || 'unknown',
+        entryPoint: entryPoint || 'unknown',
+        rpcUrl: rpcUrl || 'unknown'
       }
     }, { status: 500 });
   }

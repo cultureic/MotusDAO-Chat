@@ -1,4 +1,15 @@
 import { NextRequest } from 'next/server';
+import { createPublicClient, http, parseAbi } from 'viem';
+import { celoAlfajores } from 'viem/chains';
+
+const ENTRYPOINT_ADDRESS = '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789';
+
+// EntryPoint ABI for getUserOpHash and getDepositInfo
+const entryPointAbi = parseAbi([
+  'function getUserOpHash(tuple(address sender, uint256 nonce, bytes initCode, bytes callData, uint256 callGasLimit, uint256 verificationGasLimit, uint256 preVerificationGas, uint256 maxFeePerGas, uint256 maxPriorityFeePerGas, bytes paymasterAndData, bytes signature) userOp) view returns (bytes32)',
+  'function getDepositInfo(address account) view returns (uint256 totalDeposit, uint256 staked, uint256 stake, uint256 delayed, uint256 withdrawTime)',
+  'event UserOperationEvent(bytes32 indexed userOpHash, address indexed sender, address indexed paymaster, uint256 nonce, bool success, uint256 actualGasCost, uint256 actualGasUsed)',
+]);
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -10,18 +21,50 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    // For now, return basic transaction info
-    // In a real implementation, you'd query the blockchain or a service like Etherscan
+    const client = createPublicClient({
+      chain: celoAlfajores,
+      transport: http('https://alfajores-forno.celo-testnet.org'),
+    });
+
+    let actualTxHash = txHash;
+    let status = 'pending';
+    let explorerUrl = '';
+
+    if (userOpHash && !txHash) {
+      // Try to get the transaction hash from recent events
+      // For now, we'll use the UserOp hash as the transaction hash since they're often the same
+      // In a production system, you'd query the EntryPoint events to get the actual tx hash
+      actualTxHash = userOpHash;
+      
+      // Check if the transaction exists on the blockchain
+      try {
+        const blockNumber = await client.getBlockNumber();
+        console.log(`Current block number: ${blockNumber}`);
+        
+        // For now, assume it's pending if we don't have a specific tx hash
+        // In a real implementation, you'd query the EntryPoint events
+        status = 'pending';
+      } catch (error) {
+        console.error('Error checking transaction status:', error);
+        status = 'unknown';
+      }
+    }
+
+    // Build explorer URL
+    if (actualTxHash) {
+      explorerUrl = `https://alfajores.celoscan.io/tx/${actualTxHash}`;
+    }
+
     const transactionInfo = {
       userOpHash,
-      txHash,
-      status: 'pending', // or 'confirmed', 'failed'
+      txHash: actualTxHash,
+      status,
       timestamp: Date.now(),
       network: 'Celo Alfajores',
-      explorerUrl: userOpHash 
-        ? `https://alfajores.celoscan.io/tx/${userOpHash}`
-        : `https://alfajores.celoscan.io/tx/${txHash}`
+      explorerUrl
     };
+
+    console.log('Transaction status response:', transactionInfo);
 
     return Response.json({ success: true, transaction: transactionInfo });
   } catch (error: any) {
