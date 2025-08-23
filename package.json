@@ -12,9 +12,14 @@
     "db:generate": "prisma generate",
     "seed": "tsx scripts/seed.ts",
     "ingest": "tsx scripts/ingest.ts",
-    "deploy:alfajores": "hardhat run scripts/deploy-alfajores.cjs --network alfajores"
+    "deploy:alfajores": "hardhat run scripts/deploy-alfajores.cjs --network alfajores",
+    "deploy:alfajores-native": "hardhat run scripts/deploy-alfajores-native.cjs --network alfajores",
+    "deploy:smart-account": "hardhat run scripts/deploy-smart-account.cjs --network alfajores",
+    "add-deposit": "npx hardhat run scripts/add-deposit.js --network alfajores",
+    "send-celo": "npx hardhat run scripts/send-celo.js --network alfajores"
   },
   "dependencies": {
+    "@noble/secp256k1": "^2.3.0",
     "@openzeppelin/contracts": "^5.4.0",
     "@prisma/client": "^6.14.0",
     "@privy-io/react-auth": "^2.21.4",

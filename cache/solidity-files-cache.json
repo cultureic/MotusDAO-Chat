@@ -75,8 +75,8 @@
       ]
     },
     "/Users/main/motusdao-chat/contracts/DataPointerRegistry.sol": {
-      "lastModificationDate": 1755855676461,
-      "contentHash": "762a34f606a7893de0214c00da5cff22",
+      "lastModificationDate": 1755899982669,
+      "contentHash": "bb5fedae59549ab5fa8c15428da92398",
       "sourceName": "contracts/DataPointerRegistry.sol",
       "solcConfig": {
         "version": "0.8.24",
@@ -104,7 +104,7 @@
       },
       "imports": [],
       "versionPragmas": [
-        "^0.8.24"
+        "^0.8.20"
       ],
       "artifacts": [
         "DataPointerRegistry"
@@ -715,6 +715,116 @@
       ],
       "artifacts": [
         "TraitAttestor"
+      ]
+    },
+    "/Users/main/motusdao-chat/contracts/ChatPayNative.sol": {
+      "lastModificationDate": 1755899982664,
+      "contentHash": "f6a35676360ac95ff9bba93e5c5014a9",
+      "sourceName": "contracts/ChatPayNative.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "ChatPayNative"
+      ]
+    },
+    "/Users/main/motusdao-chat/contracts/SimpleSmartAccount.sol": {
+      "lastModificationDate": 1755910358894,
+      "contentHash": "6e73c72931740b5ebf360ec8f107f710",
+      "sourceName": "contracts/SimpleSmartAccount.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/utils/cryptography/ECDSA.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "SimpleSmartAccount"
+      ]
+    },
+    "/Users/main/motusdao-chat/node_modules/.pnpm/@openzeppelin+contracts@5.4.0/node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol": {
+      "lastModificationDate": 1755855066238,
+      "contentHash": "81de029d56aa803972be03c5d277cb6c",
+      "sourceName": "@openzeppelin/contracts/utils/cryptography/ECDSA.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "ECDSA"
       ]
     }
   }

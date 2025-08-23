@@ -1,4 +1,6 @@
+'use client';
 import MintHNFT from '../components/MintHNFT';
+import SmartAccountInfo from '../components/SmartAccountInfo';
 import Link from 'next/link';
 
 export default function AdminPage() {
@@ -19,6 +21,11 @@ export default function AdminPage() {
         <div className="rounded-2xl border p-4">Logs (stub)</div>
         <div className="rounded-2xl border p-4">Consents (stub)</div>
         <div className="rounded-2xl border p-4">Settings (stub)</div>
+        <div className="rounded-2xl border p-4">
+          <h2 className="font-medium mb-2">Smart Account</h2>
+          <p className="opacity-70 text-sm mb-3">Your AA wallet for gasless transactions.</p>
+          <SmartAccountInfo />
+        </div>
         <div className="rounded-2xl border p-4">
           <h2 className="font-medium mb-2">On-chain</h2>
           <p className="opacity-70 text-sm mb-3">Mint and manage your HNFT.</p>

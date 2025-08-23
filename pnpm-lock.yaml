@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@noble/secp256k1':
+        specifier: ^2.3.0
+        version: 2.3.0
       '@openzeppelin/contracts':
         specifier: ^5.4.0
         version: 5.4.0
@@ -61,7 +64,7 @@ importers:
         version: 0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       openai:
         specifier: ^5.15.0
-        version: 5.15.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@4.0.17)
+        version: 5.15.0(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@4.0.17)
       pg:
         specifier: ^8.16.3
         version: 8.16.3
@@ -1008,6 +1011,9 @@ packages:
 
   '@noble/secp256k1@1.7.1':
     resolution: {integrity: sha512-hOUk6AyBFmqVrv7k5WAw/LpszxVbj9gGN4JRkIX52fdFAj1UA61KXmZDvqVEm+pOyec3+fIeZB02LYa/pWOArw==}
+
+  '@noble/secp256k1@2.3.0':
+    resolution: {integrity: sha512-0TQed2gcBbIrh7Ccyw+y/uZQvbJwm7Ao4scBUxqpBCcsOlZG0O4KGfjtNAy/li4W8n1xt3dxrwJ0beZ2h2G6Kw==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -7542,6 +7548,8 @@ snapshots:
 
   '@noble/secp256k1@1.7.1': {}
 
+  '@noble/secp256k1@2.3.0': {}
+
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
       '@nodelib/fs.stat': 2.0.5
@@ -12895,9 +12903,9 @@ snapshots:
     dependencies:
       wrappy: 1.0.2
 
-  openai@5.15.0(ws@8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@4.0.17):
+  openai@5.15.0(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@4.0.17):
     optionalDependencies:
-      ws: 8.18.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+      ws: 8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       zod: 4.0.17
 
   optionator@0.8.3:
