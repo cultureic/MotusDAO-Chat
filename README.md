@@ -1,6 +1,17 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MotusDAO AI Chat
 
-## Getting Started
+A modern, blockchain-powered AI chat application with native CELO payments, built with Next.js 15, Etherspot Arka paymaster, and Account Abstraction.
+
+## ✨ Features
+
+- **Modern UI/UX**: Glassmorphism design with Framer Motion micro-interactions
+- **Blockchain Integration**: Native CELO payments per message
+- **Account Abstraction**: ERC-4337 smart accounts with Etherspot Arka
+- **Mobile Responsive**: Optimized for all devices
+- **Three.js Scenes**: Lightweight decorative 3D elements
+- **Accessibility**: WCAG 2.2 AA compliant with reduced motion support
+
+## 🚀 Getting Started
 
 First, run the development server:
 
@@ -16,20 +27,56 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🎨 Theme System
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The app supports multiple themes and accessibility features:
 
-## Learn More
+### Theme Toggle
+- **Dark Theme** (default): Modern dark interface with glassmorphism
+- **Light Theme**: Clean light interface
+- **High Contrast**: Enhanced accessibility mode
 
-To learn more about Next.js, take a look at the following resources:
+### Motion Preferences
+- **Reduced Motion**: Automatically disables animations for users with `prefers-reduced-motion`
+- **Performance**: Three.js scenes auto-disable on low-power devices
+- **Accessibility**: Full keyboard navigation and screen reader support
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Design Tokens
+All colors, spacing, and animations are defined in `styles/tokens.json` and mapped to CSS variables for easy customization.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🛠️ Tech Stack
 
-## Deploy on Vercel
+- **Frontend**: Next.js 15, React, TypeScript
+- **Styling**: Tailwind CSS with custom design tokens
+- **Animations**: Framer Motion with performance optimizations
+- **3D Graphics**: Three.js with React Three Fiber
+- **Blockchain**: Celo Network, Etherspot Arka, Account Abstraction
+- **Authentication**: Privy for wallet integration
+
+## 📱 Mobile Responsive
+
+The interface is fully responsive with:
+- Adaptive layouts for mobile, tablet, and desktop
+- Touch-friendly interactions
+- Optimized performance on mobile devices
+- Progressive enhancement
+
+## 🔧 Customization
+
+### Colors & Themes
+Edit `styles/tokens.json` to customize:
+- Brand colors (brand-300, brand-500, brand-600)
+- Accent colors (mint, iris, peach)
+- Background and foreground colors
+- Border radius and shadow values
+
+### Animations
+Modify motion durations in `styles/tokens.json`:
+- `fast`: 80ms for quick interactions
+- `base`: 160ms for standard animations
+- `slow`: 240ms for emphasis
+
+## 🚀 Deployment
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 

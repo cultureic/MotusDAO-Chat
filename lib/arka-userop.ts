@@ -31,8 +31,8 @@ export async function createUserOperation(params: {
   // Get the current nonce from the smart account
   let nonce = params.nonce;
   if (!nonce) {
-    // Use the correct next nonce (current nonce is 9, so use 10)
-    nonce = "0xa";
+    // Use the correct next nonce (current nonce is 21, so use 22)
+    nonce = "0x16";
   }
 
   // Encode call to smart account's execute function
