@@ -3,6 +3,9 @@ import MintHNFT from '../components/MintHNFT';
 import SmartAccountInfo from '../components/SmartAccountInfo';
 import Link from 'next/link';
 
+// Disable static generation for this page
+export const dynamic = 'force-dynamic';
+
 export default function AdminPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-cyan-50 pb-8">

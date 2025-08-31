@@ -5,11 +5,12 @@ import { celoAlfajores } from 'viem/chains';
 const ENTRYPOINT_ADDRESS = '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789';
 
 // EntryPoint ABI for getUserOpHash and getDepositInfo
-const entryPointAbi = parseAbi([
-  'function getUserOpHash(tuple(address sender, uint256 nonce, bytes initCode, bytes callData, uint256 callGasLimit, uint256 verificationGasLimit, uint256 preVerificationGas, uint256 maxFeePerGas, uint256 maxPriorityFeePerGas, bytes paymasterAndData, bytes signature) userOp) view returns (bytes32)',
-  'function getDepositInfo(address account) view returns (uint256 totalDeposit, uint256 staked, uint256 stake, uint256 delayed, uint256 withdrawTime)',
-  'event UserOperationEvent(bytes32 indexed userOpHash, address indexed sender, address indexed paymaster, uint256 nonce, bool success, uint256 actualGasCost, uint256 actualGasUsed)',
-]);
+// Note: Complex tuple parsing disabled for deployment compatibility
+// const entryPointAbi = parseAbi([
+//   'function getUserOpHash(tuple(address sender, uint256 nonce, bytes initCode, bytes callData, uint256 callGasLimit, uint256 verificationGasLimit, uint256 preVerificationGas, uint256 maxFeePerGas, uint256 maxPriorityFeePerGas, bytes paymasterAndData, bytes signature) userOp) view returns (bytes32)',
+//   'function getDepositInfo(address account) view returns (uint256 totalDeposit, uint256 staked, uint256 stake, uint256 delayed, uint256 withdrawTime)',
+//   'event UserOperationEvent(bytes32 indexed userOpHash, address indexed sender, address indexed paymaster, uint256 nonce, bool success, uint256 actualGasCost, uint256 actualGasUsed)',
+// ]);
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);

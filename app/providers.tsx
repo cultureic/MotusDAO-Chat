@@ -12,9 +12,20 @@ const config = createConfig({
 
 export default function AppProviders({ children }: { children: ReactNode }) {
   const [qc] = useState(() => new QueryClient());
+  const privyAppId = process.env.NEXT_PUBLIC_PRIVY_APP_ID;
+  
+  // If no Privy app ID is provided, render without Privy provider
+  if (!privyAppId || privyAppId.trim() === '' || privyAppId === 'your-privy-app-id-here') {
+    return (
+      <WagmiProvider config={config}>
+        <QueryClientProvider client={qc}>{children}</QueryClientProvider>
+      </WagmiProvider>
+    );
+  }
+  
   return (
     <PrivyProvider 
-      appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID || ''}
+      appId={privyAppId}
       config={{
         loginMethods: ['email', 'wallet'],
         appearance: {

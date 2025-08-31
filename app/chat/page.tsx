@@ -1,5 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
+
+// Disable static generation for this page
+export const dynamic = 'force-dynamic';
 import { useSmartAccount } from '@/lib/smart-account';
 import { useWallets, useSendTransaction, useSessionSigners } from '@privy-io/react-auth';
 
