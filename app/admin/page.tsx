@@ -51,7 +51,7 @@ export default function AdminPage() {
             </div>
             <div className="bg-white/50 rounded-2xl border border-white/30 p-6 backdrop-blur-sm">
               <h2 className="font-semibold text-lg mb-3">HNFT Management</h2>
-              <p className="text-gray-600 text-sm mb-4">Mint and manage your Holochain NFT</p>
+              <p className="text-gray-600 text-sm mb-4">Mint and manage your Human NFT</p>
               <MintHNFT />
             </div>
           </div>

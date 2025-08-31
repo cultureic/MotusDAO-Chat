@@ -26,8 +26,30 @@ export function useSmartAccount() {
     );
   }, [wallets]);
   
+  // Determine user type and primary address
+  const userType = useMemo(() => {
+    if (smartWallet && !eoaWallet) return 'smart-only'; // Email user with smart account
+    if (eoaWallet && !smartWallet) return 'eoa-only'; // EOA user without smart account
+    if (eoaWallet && smartWallet) return 'hybrid'; // User with both EOA and smart account
+    return 'none';
+  }, [smartWallet, eoaWallet]);
+  
+  // Get the primary address based on user type
+  const primaryAddress = useMemo(() => {
+    switch (userType) {
+      case 'smart-only':
+        return smartWallet?.address; // Email user's smart account
+      case 'eoa-only':
+        return eoaWallet?.address; // EOA user's wallet
+      case 'hybrid':
+        return smartWallet?.address; // Prefer smart account for transactions
+      default:
+        return null;
+    }
+  }, [userType, smartWallet, eoaWallet]);
+  
   // For email login, the user might not have an EOA wallet initially
-  const eoaAddress = eoaWallet?.address || user?.wallet?.address;
+  const eoaAddress = eoaWallet?.address || null; // Don't fallback to user.wallet.address
   const smartAccountAddress = smartWallet?.address;
   
   // Debug logging
@@ -35,6 +57,8 @@ export function useSmartAccount() {
     console.log('SmartAccount Debug - Wallet state:', {
       ready,
       authenticated,
+      userType,
+      primaryAddress,
       eoaAddress,
       smartAccountAddress,
       walletCount: wallets.length,
@@ -49,11 +73,13 @@ export function useSmartAccount() {
       hasEOA: !!eoaWallet,
       userWallet: user?.wallet?.address
     });
-  }, [ready, authenticated, eoaAddress, smartAccountAddress, wallets, user, smartWallet, eoaWallet]);
+  }, [ready, authenticated, userType, primaryAddress, eoaAddress, smartAccountAddress, wallets, user, smartWallet, eoaWallet]);
   
   return {
     eoaAddress,
     smartAccountAddress,
+    primaryAddress,
+    userType,
     isAuthenticated: authenticated,
     userId: user?.id,
     userEmail: user?.email?.address,
@@ -71,5 +97,5 @@ export function getSmartAccountAddress(eoaAddress: string): `0x${string}` {
   
   // For now, return the actual deployed smart account address
   // TODO: Implement proper deterministic smart account generation
-  return "0x71AE0f13Ca3519A3a36E53f6113f4B638Cb3acFB" as `0x${string}`;
+  return "0xee175CFCE295ADa16e84f6132f175e40a54117a8" as `0x${string}`;
 }

@@ -5,7 +5,7 @@ import { usePrivy } from '@privy-io/react-auth';
 
 export default function SmartAccountInfo() {
   const [copiedAddress, setCopiedAddress] = useState<string | null>(null);
-  const { eoaAddress, smartAccountAddress, hasSmartWallet, hasEOA, userEmail, isReady } = useSmartAccount();
+  const { eoaAddress, smartAccountAddress, hasSmartWallet, hasEOA, userEmail, isReady, userType, primaryAddress } = useSmartAccount();
   const { authenticated } = usePrivy();
 
   const copyToClipboard = async (text: string, label: string) => {
@@ -89,10 +89,23 @@ export default function SmartAccountInfo() {
         </div>
       </div>
 
-      {/* Status */}
-      <div className="text-xs text-gray-500 pt-2 border-t border-gray-200">
-        Status: {hasSmartWallet ? 'Smart Wallet Ready' : authenticated ? 'Creating Smart Wallet...' : 'Connecting...'}
-      </div>
+             {/* User Type */}
+       <div className="text-xs text-gray-500 pt-2 border-t border-gray-200">
+         <div className="flex items-center justify-between">
+           <span>Type:</span>
+           <span className="font-medium">
+             {userType === 'smart-only' ? 'Email User' : 
+              userType === 'eoa-only' ? 'EOA User' : 
+              userType === 'hybrid' ? 'Hybrid User' : 'Unknown'}
+           </span>
+         </div>
+         <div className="flex items-center justify-between">
+           <span>Status:</span>
+           <span className="font-medium">
+             {hasSmartWallet ? 'Smart Wallet Ready' : authenticated ? 'Creating Smart Wallet...' : 'Connecting...'}
+           </span>
+         </div>
+       </div>
 
       {/* Arka Whitelist Info */}
       {smartAccountAddress && (

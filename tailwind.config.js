@@ -5,7 +5,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        jura: ['var(--font-jura)', 'sans-serif'],
+        jura: ['Jura', 'sans-serif'],
       },
     }
   },

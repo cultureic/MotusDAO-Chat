@@ -1,10 +1,10 @@
 // Shared utilities for navbar components
 
 export const menuItems = [
-  { href: '/', label: 'Home', icon: '🏠' },
-  { href: '/chat', label: 'Chat', icon: '💬' },
-  { href: '/admin', label: 'Profile', icon: '👤' },
-  { href: '/about', label: 'About', icon: 'ℹ️' },
+  { href: '/', label: 'Home' },
+  { href: '/chat', label: 'Chat' },
+  { href: '/admin', label: 'Profile' },
+  { href: '/about', label: 'About' },
 ];
 
 export const getNavbarClasses = (scrolled: boolean) => `
@@ -18,8 +18,8 @@ export const getNavbarClasses = (scrolled: boolean) => `
 `;
 
 export const getMenuItemClasses = (isActive: boolean) => `
-  flex items-center space-x-2 px-4 py-2.5 rounded-2xl text-sm font-medium
-  transition-all duration-300 ease-out
+  flex items-center px-4 py-2.5 rounded-2xl text-base font-medium font-jura
+  transition-all duration-300 ease-out no-underline
   ${isActive
     ? 'bg-white/20 text-gray-900 shadow-lg border border-white/30'
     : 'text-gray-700 hover:text-gray-900 hover:bg-white/15 hover:shadow-md'
@@ -27,8 +27,8 @@ export const getMenuItemClasses = (isActive: boolean) => `
 `;
 
 export const getMobileMenuItemClasses = (isActive: boolean) => `
-  flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium
-  transition-all duration-300
+  flex items-center px-4 py-3 rounded-xl text-base font-medium font-jura
+  transition-all duration-300 no-underline
   ${isActive
     ? 'bg-white/30 text-gray-900 shadow-md'
     : 'text-gray-700 hover:text-gray-900 hover:bg-white/20'

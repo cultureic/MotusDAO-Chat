@@ -1,21 +1,193 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Jura:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Clean white canvas with subtle pastel radial tints */
-html, body { height: 100%; }
-body {
-  @apply bg-white text-gray-900 antialiased;
-  background:
-    radial-gradient(1000px 480px at 80% -10%, rgba(207,236,255,.35), transparent 55%),
-    radial-gradient(800px 420px at -10% 0%, rgba(242,182,255,.28), transparent 52%),
-    #fff;
+/* Enhanced Neumorphic-Minimalist Hybrid Design System */
+
+/* Custom CSS Variables for Design System */
+:root {
+  /* Neumorphic Shadows */
+  --neumorphic-light: 0 8px 32px rgba(255, 255, 255, 0.8);
+  --neumorphic-dark: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --neumorphic-inset: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+  
+  /* Glassmorphism */
+  --glass-bg: rgba(255, 255, 255, 0.25);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+  
+  /* Color Palette */
+  --primary-black: #1a1a1a;
+  --primary-blue: #6366f1;
+  --primary-gray: #6b7280;
+  --pastel-purple: #e0e7ff;
+  --pastel-pink: #fce7f3;
+  --pastel-cyan: #ecfeff;
+  --soft-white: #fafafa;
 }
 
-/* Tighter link look */
-a { @apply text-gray-900; }
+/* Base Styles */
+html, body { 
+  height: 100%; 
+}
 
-/* Nice selection */
-::selection { background: #C9B9FF33; }
+body {
+  @apply antialiased;
+  background: 
+    /* Moving gradient background */
+    linear-gradient(
+      45deg,
+      rgba(168, 85, 247, 0.08) 0%,
+      rgba(236, 72, 153, 0.06) 25%,
+      rgba(244, 114, 182, 0.08) 50%,
+      rgba(168, 85, 247, 0.06) 75%,
+      rgba(236, 72, 153, 0.08) 100%
+    ),
+    /* Additional soft gradients for depth */
+    radial-gradient(1200px 600px at 85% -15%, rgba(168, 85, 247, 0.12), transparent 60%),
+    radial-gradient(1000px 500px at -15% 10%, rgba(236, 72, 153, 0.10), transparent 55%),
+    radial-gradient(800px 400px at 50% 90%, rgba(244, 114, 182, 0.08), transparent 50%),
+    var(--soft-white);
+  background-size: 400% 400%, 100% 100%, 100% 100%, 100% 100%;
+  animation: gradientShift 15s ease-in-out infinite;
+  color: var(--primary-black);
+}
+
+/* Moving gradient animation */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%, 0% 0%, 0% 0%, 0% 0%;
+  }
+  25% {
+    background-position: 100% 50%, 0% 0%, 0% 0%, 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%, 0% 0%, 0% 0%, 0% 0%;
+  }
+  75% {
+    background-position: 0% 100%, 0% 0%, 0% 0%, 0% 0%;
+  }
+  100% {
+    background-position: 0% 50%, 0% 0%, 0% 0%, 0% 0%;
+  }
+}
+
+/* Dark theme overrides */
+[data-theme="dark"] body,
+html.dark body {
+  background: #0b0b0f;
+  color: #e5e7eb;
+}
+
+/* Matrix theme (cypherpunk: black background, neon green accents) */
+[data-theme="matrix"] body,
+html.dark[data-theme="matrix"] body {
+  background: #000000;
+  color: #a7f3d0;
+}
+
+/* Matrix-specific utility tweaks */
+[data-theme="matrix"] .matrix-glow {
+  text-shadow: 0 0 6px rgba(16, 185, 129, 0.8), 0 0 24px rgba(16, 185, 129, 0.35);
+}
+
+[data-theme="matrix"] .matrix-border {
+  border-color: rgba(16, 185, 129, 0.5) !important;
+  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.4), 0 0 24px rgba(16, 185, 129, 0.25);
+}
+
+[data-theme="matrix"] a {
+  color: #10b981;
+}
+
+
+/* Neumorphic Components */
+.neumorphic {
+  background: var(--soft-white);
+  box-shadow: 
+    var(--neumorphic-light),
+    var(--neumorphic-dark);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.neumorphic-inset {
+  background: var(--soft-white);
+  box-shadow: var(--neumorphic-inset);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Glassmorphic Components */
+.glassmorphic {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+/* Modern Typography */
+.modern-typography {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.modern-typography-large {
+  font-size: clamp(2rem, 5vw, 4rem);
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.modern-typography-medium {
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Smooth Transitions */
+.smooth-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.smooth-transition-slow {
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced Selection */
+::selection { 
+  background: rgba(99, 102, 241, 0.2); 
+  color: var(--primary-black);
+}
+
+/* Link Styles */
+a { 
+  @apply text-gray-900;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--primary-blue);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--soft-white);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.3);
+}

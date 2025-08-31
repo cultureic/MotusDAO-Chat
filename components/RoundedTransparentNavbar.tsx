@@ -11,6 +11,7 @@ import { menuItems, getNavbarClasses, getMenuItemClasses, getMobileMenuItemClass
 export default function RoundedTransparentNavbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [copiedAddress, setCopiedAddress] = useState<string | null>(null);
   const pathname = usePathname();
   
   // Privy hooks
@@ -63,6 +64,18 @@ export default function RoundedTransparentNavbar() {
     }
   };
 
+  // Copy address to clipboard
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedAddress(text);
+      setTimeout(() => setCopiedAddress(null), 2000);
+      console.log('Copied to clipboard:', text);
+    } catch (error) {
+      console.error('Failed to copy to clipboard:', error);
+    }
+  };
+
   return (
     <div className="fixed top-4 left-4 right-4 z-50">
       <motion.nav
@@ -83,10 +96,10 @@ export default function RoundedTransparentNavbar() {
               <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-2xl"></div>
             </motion.div>
             <div className="flex flex-col">
-              <span className="text-xl font-bold bg-gradient-to-r from-gray-900 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+              <span className="text-2xl font-bold font-jura bg-gradient-to-r from-gray-900 via-purple-600 to-pink-600 bg-clip-text text-transparent">
                 MotusDAO
               </span>
-              <span className="text-xs text-gray-500 font-medium">AI Psychology Platform</span>
+              <span className="text-sm text-gray-500 font-medium font-jura">AI Psychology Platform</span>
             </div>
           </Link>
 
@@ -102,16 +115,7 @@ export default function RoundedTransparentNavbar() {
                   href={item.href}
                   className={getMenuItemClasses(pathname === item.href)}
                 >
-                  <span className="text-base">{item.icon}</span>
                   <span>{item.label}</span>
-                  {pathname === item.href && (
-                    <motion.div
-                      layoutId="activeTab"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"
-                      initial={false}
-                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                    />
-                  )}
                 </Link>
               </motion.div>
             ))}
@@ -119,11 +123,51 @@ export default function RoundedTransparentNavbar() {
 
           {/* Action Buttons */}
           <div className="hidden lg:flex items-center space-x-3">
-            {/* Simple Connection Status */}
+            {/* Connection Status with Account Info */}
             {authenticated && (
-              <div className="flex items-center space-x-2 px-3 py-2 bg-white/50 border border-white/30 rounded-xl backdrop-blur-sm">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-sm text-gray-700 font-medium">Connected</span>
+              <div className="flex flex-col space-y-1 px-3 py-2 bg-white/50 border border-white/30 rounded-xl backdrop-blur-sm">
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-base text-gray-700 font-medium font-jura">Connected</span>
+                </div>
+                <div className="text-sm text-gray-600 font-jura">
+                  {userEmail ? (
+                    <button
+                      onClick={() => copyToClipboard(userEmail)}
+                      className="flex items-center space-x-1 hover:text-gray-800 transition-colors"
+                      title={`Copy ${userEmail}`}
+                    >
+                      <span>📧 {userEmail}</span>
+                      <span className="text-xs opacity-70">
+                        {copiedAddress === userEmail ? '✅' : '📋'}
+                      </span>
+                    </button>
+                  ) : eoaAddress ? (
+                    <button
+                      onClick={() => copyToClipboard(eoaAddress)}
+                      className="flex items-center space-x-1 hover:text-gray-800 transition-colors"
+                      title={`Copy ${eoaAddress}`}
+                    >
+                      <span>🔗 {eoaAddress.slice(0, 6)}...{eoaAddress.slice(-4)}</span>
+                      <span className="text-xs opacity-70">
+                        {copiedAddress === eoaAddress ? '✅' : '📋'}
+                      </span>
+                    </button>
+                  ) : smartAccountAddress ? (
+                    <button
+                      onClick={() => copyToClipboard(smartAccountAddress)}
+                      className="flex items-center space-x-1 hover:text-gray-800 transition-colors"
+                      title={`Copy ${smartAccountAddress}`}
+                    >
+                      <span>🤖 {smartAccountAddress.slice(0, 6)}...{smartAccountAddress.slice(-4)}</span>
+                      <span className="text-xs opacity-70">
+                        {copiedAddress === smartAccountAddress ? '✅' : '📋'}
+                      </span>
+                    </button>
+                  ) : (
+                    <span>Account</span>
+                  )}
+                </div>
               </div>
             )}
             
@@ -132,7 +176,7 @@ export default function RoundedTransparentNavbar() {
               disabled={!ready}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-6 py-2.5 rounded-2xl text-sm font-medium transition-all duration-300 shadow-lg hover:shadow-xl"
+              className="px-6 py-2.5 rounded-2xl text-base font-medium font-jura transition-all duration-300 shadow-lg hover:shadow-xl"
               style={{
                 background: 'linear-gradient(to right, #9333ea, #ec4899)',
                 color: 'white'
@@ -189,18 +233,57 @@ export default function RoundedTransparentNavbar() {
                       onClick={toggleMenu}
                       className={getMobileMenuItemClasses(pathname === item.href)}
                     >
-                      <span className="text-lg">{item.icon}</span>
                       <span>{item.label}</span>
                     </Link>
                   </motion.div>
                 ))}
                 
-                {/* Mobile Connection Status */}
+                {/* Mobile Connection Status with Account Info */}
                 {authenticated && (
                   <div className="pt-4 p-3 bg-white/50 border border-white/30 rounded-xl backdrop-blur-sm">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                      <span className="text-sm text-gray-700 font-medium">Connected</span>
+                    <div className="flex flex-col space-y-1">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                        <span className="text-base text-gray-700 font-medium font-jura">Connected</span>
+                      </div>
+                      <div className="text-sm text-gray-600 font-jura">
+                        {userEmail ? (
+                          <button
+                            onClick={() => copyToClipboard(userEmail)}
+                            className="flex items-center space-x-1 hover:text-gray-800 transition-colors"
+                            title={`Copy ${userEmail}`}
+                          >
+                            <span>📧 {userEmail}</span>
+                            <span className="text-xs opacity-70">
+                              {copiedAddress === userEmail ? '✅' : '📋'}
+                            </span>
+                          </button>
+                        ) : eoaAddress ? (
+                          <button
+                            onClick={() => copyToClipboard(eoaAddress)}
+                            className="flex items-center space-x-1 hover:text-gray-800 transition-colors"
+                            title={`Copy ${eoaAddress}`}
+                          >
+                            <span>🔗 {eoaAddress.slice(0, 6)}...{eoaAddress.slice(-4)}</span>
+                            <span className="text-xs opacity-70">
+                              {copiedAddress === eoaAddress ? '✅' : '📋'}
+                            </span>
+                          </button>
+                        ) : smartAccountAddress ? (
+                          <button
+                            onClick={() => copyToClipboard(smartAccountAddress)}
+                            className="flex items-center space-x-1 hover:text-gray-800 transition-colors"
+                            title={`Copy ${smartAccountAddress}`}
+                          >
+                            <span>🤖 {smartAccountAddress.slice(0, 6)}...{smartAccountAddress.slice(-4)}</span>
+                            <span className="text-xs opacity-70">
+                              {copiedAddress === smartAccountAddress ? '✅' : '📋'}
+                            </span>
+                          </button>
+                        ) : (
+                          <span>Account</span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 )}
@@ -212,7 +295,7 @@ export default function RoundedTransparentNavbar() {
                     disabled={!ready}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full flex items-center justify-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-300 shadow-lg"
+                    className="w-full flex items-center justify-center px-4 py-3 text-base font-medium font-jura rounded-xl transition-all duration-300 shadow-lg"
                     style={{
                       background: 'linear-gradient(to right, #9333ea, #ec4899)',
                       color: 'white'

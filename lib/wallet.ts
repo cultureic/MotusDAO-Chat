@@ -2,7 +2,7 @@
 export function getSmartAccountAddress(eoaAddress: string): `0x${string}` {
   if (!eoaAddress) throw new Error('EOA address required');
   
-  // For now, return the actual deployed smart account address
+  // For now, return the funded smart account address
   // TODO: Implement proper deterministic smart account generation
   return "0x71AE0f13Ca3519A3a36E53f6113f4B638Cb3acFB" as `0x${string}`;
 }
@@ -13,11 +13,23 @@ export async function authUser() {
   return { id: "dev-user" };
 }
 
-export async function getUserSmartAccount(userId: string): Promise<`0x${string}`> {
-  // TODO: In a real app, you'd get the user's EOA from the database
-  // For now, we'll use the user's actual wallet address
-  const testEOA = "0x03A86631B02e561DadD731d0D84E1dbbb479d9Af";
-  return getSmartAccountAddress(testEOA);
+export async function getUserSmartAccount(userId: string, userType: 'eoa-only' | 'smart-only' | 'hybrid', primaryAddress: string): Promise<`0x${string}`> {
+  // Now we receive the actual user information from the client
+  if (!primaryAddress) throw new Error('Primary address required');
+  
+  // For now, use the funded smart account that we know works
+  // TODO: Implement proper smart account deployment for new users
+  const fundedSmartAccount = "0x71AE0f13Ca3519A3a36E53f6113f4B638Cb3acFB" as `0x${string}`;
+  
+  console.log('getUserSmartAccount:', {
+    userId,
+    userType,
+    primaryAddress,
+    usingFundedAccount: fundedSmartAccount
+  });
+  
+  // Use the funded smart account for all user types until we fix deployment
+  return fundedSmartAccount;
 }
 
 export async function getUserTokenId(userId: string): Promise<string> {

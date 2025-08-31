@@ -25,7 +25,7 @@ export default function AppProviders({ children }: { children: ReactNode }) {
         supportedChains: [celoAlfajores, celo],
         // Enable embedded wallets for email users
         embeddedWallets: {
-          createOnLogin: 'users-without-wallets',
+          createOnLogin: 'all-users',
         }
       }}
     >
