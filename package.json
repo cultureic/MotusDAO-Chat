@@ -19,6 +19,9 @@
     "send-celo": "npx hardhat run scripts/send-celo.js --network alfajores"
   },
   "dependencies": {
+    "@dfinity/agent": "^3.2.3",
+    "@dfinity/candid": "^3.2.3",
+    "@dfinity/principal": "^3.2.3",
     "@gsap/react": "^2.1.2",
     "@noble/secp256k1": "^2.3.0",
     "@openzeppelin/contracts": "^5.4.0",
