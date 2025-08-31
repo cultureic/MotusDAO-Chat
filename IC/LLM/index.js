@@ -1,9 +1,26 @@
-// Real IC LLM Actor implementation
+// Real IC LLM Actor implementation using correct IDL interface
+import { Actor, HttpAgent } from '@dfinity/agent';
+
 // IC Network configuration
 const IC_HOST = process.env.NODE_ENV === 'development' ? 'http://localhost:4943' : 'https://ic0.app';
 
 // Check if we should force use real canister (set via environment variable)
 const FORCE_REAL_CANISTER = process.env.NEXT_PUBLIC_USE_REAL_IC_CANISTER === 'true';
+
+// Correct IDL Factory based on working example
+const idlFactory = ({ IDL }) => {
+  const role = IDL.Variant({
+    'user': IDL.Null,
+    'assistant': IDL.Null,
+    'system': IDL.Null,
+  });
+  const chat_message = IDL.Record({ 'content': IDL.Text, 'role': role });
+  const chat_request = IDL.Record({
+    'model': IDL.Text,
+    'messages': IDL.Vec(chat_message),
+  });
+  return IDL.Service({ 'v0_chat': IDL.Func([chat_request], [IDL.Text], []) });
+};
 
 export const createLLMActor = async (canisterId) => {
   console.log(`🔗 Creating LLM Actor for canister: ${canisterId}`);
@@ -27,56 +44,7 @@ export const createLLMActor = async (canisterId) => {
 
 // Real IC Actor creation
 const createRealICActor = async (canisterId) => {
-  // Dynamic import of IC dependencies
-  const { Actor, HttpAgent } = await import('@dfinity/agent');
-  
-  if (!Actor || !HttpAgent) {
-    throw new Error('IC dependencies not available');
-  }
-  
-  // Define the canister interface (IDL)
-  const idlFactory = ({ IDL }) => {
-    const ChatMessage = IDL.Record({
-      role: IDL.Variant({ user: IDL.Null, assistant: IDL.Null }),
-      content: IDL.Text
-    });
-    
-    const ChatRequest = IDL.Record({
-      model: IDL.Text,
-      messages: IDL.Vec(ChatMessage)
-    });
-    
-    const ChatChoice = IDL.Record({
-      index: IDL.Nat,
-      message: ChatMessage,
-      finish_reason: IDL.Variant({ stop: IDL.Null, length: IDL.Null })
-    });
-    
-    const Usage = IDL.Record({
-      prompt_tokens: IDL.Nat,
-      completion_tokens: IDL.Nat,
-      total_tokens: IDL.Nat
-    });
-    
-    const ChatResponse = IDL.Record({
-      id: IDL.Text,
-      model: IDL.Text,
-      created: IDL.Nat,
-      choices: IDL.Vec(ChatChoice),
-      usage: Usage
-    });
-    
-    const Result = IDL.Variant({
-      Ok: ChatResponse,
-      Err: IDL.Text
-    });
-    
-    return IDL.Service({
-      v0_chat: IDL.Func([ChatRequest], [Result], ['update']),
-      get_models: IDL.Func([], [IDL.Vec(IDL.Text)], ['query']),
-      get_status: IDL.Func([], [IDL.Text], ['query'])
-    });
-  };
+  console.log(`🚀 Creating REAL IC Actor for canister: ${canisterId}`);
   
   // Create HTTP agent
   const agent = new HttpAgent({ 
@@ -85,26 +53,32 @@ const createRealICActor = async (canisterId) => {
   
   // In development, fetch root key
   if (process.env.NODE_ENV === 'development') {
+    console.log('🔑 Fetching root key for development...');
     await agent.fetchRootKey();
   }
   
-  // Create actor
+  // Create actor with correct IDL
   const actor = Actor.createActor(idlFactory, {
     agent,
     canisterId
   });
   
-  // Test the connection
+  // Test the connection with a simple call
   try {
-    console.log('🧪 Testing real canister connection...');
-    const status = await actor.get_status();
-    console.log('✅ Real canister connection successful:', status);
+    console.log('🧪 Testing real canister connection with ping...');
+    // Try a simple chat call to test connectivity
+    const testRequest = {
+      model: 'test',
+      messages: [{ role: { user: null }, content: 'ping' }]
+    };
+    const testResponse = await actor.v0_chat(testRequest);
+    console.log('✅ Real canister connection successful! Response:', testResponse);
   } catch (testError) {
-    console.warn('⚠️ Canister test failed, but actor created:', testError);
-    // Continue anyway - the canister might not have get_status method
+    console.warn('⚠️ Canister test ping failed:', testError);
+    // Continue anyway - the canister might be working but rejecting test calls
   }
   
-  console.log(`✅ Real IC LLM Actor created for canister: ${canisterId}`);
+  console.log(`✅ Real IC LLM Actor created and tested for canister: ${canisterId}`);
   return actor;
 };
 
@@ -113,7 +87,7 @@ const createMockActor = (canisterId) => {
   const actor = {
     canisterId,
     
-    // Mock v0_chat method that clearly indicates it's a mock
+    // Mock v0_chat method that returns simple string like real canister
     v0_chat: async (chatRequest) => {
       console.log('🤖 Mock LLM Actor - Chat request:', chatRequest);
       console.log('⚠️ THIS IS A MOCK RESPONSE - SET NEXT_PUBLIC_USE_REAL_IC_CANISTER=true TO USE REAL CANISTER');
@@ -126,28 +100,10 @@ const createMockActor = (canisterId) => {
       const userContent = lastMessage?.content || '';
       
       // Generate a mock response that makes it clear it's not real
+      // Return simple string like real canister (not complex object)
       const mockResponse = `[MOCK RESPONSE] Thank you for saying "${userContent}". This is a simulated response from canister ${canisterId}. To get real AI responses, set NEXT_PUBLIC_USE_REAL_IC_CANISTER=true and ensure your IC canister is deployed and accessible.`;
       
-      return {
-        Ok: {
-          id: `mock-chat-${Date.now()}`,
-          model: chatRequest.model,
-          created: Math.floor(Date.now() / 1000),
-          choices: [{
-            index: 0,
-            message: {
-              role: { assistant: null },
-              content: mockResponse
-            },
-            finish_reason: { stop: null }
-          }],
-          usage: {
-            prompt_tokens: userContent.length,
-            completion_tokens: mockResponse.length,
-            total_tokens: userContent.length + mockResponse.length
-          }
-        }
-      };
+      return mockResponse;
     },
     
     // Mock method to get available models

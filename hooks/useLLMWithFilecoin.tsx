@@ -126,11 +126,16 @@ export const useLLMWithFilecoinLogic = (canisterId = "w36hm-eqaaa-aaaal-qr76a-ca
       // Use current session messages if no messages provided
       const messagesToSend = requestMessages || currentSession?.messages || [];
       
-      // Transform messages to the expected format
+      // Transform messages to the expected format for real canister
+      // Based on working example from Aidias app
       const transformedMessages = messagesToSend.map(msg => ({
-        role: { user: null }, // Fixed structure as requested
+        role: msg.role === 'user' ? { user: null } : 
+              msg.role === 'assistant' ? { assistant: null } : 
+              { system: null },
         content: msg.content
       }));
+      
+      console.log('📤 Transformed messages for canister:', transformedMessages);
 
       // Prepare the chat request with correct structure
       const chatRequest = {
@@ -138,15 +143,31 @@ export const useLLMWithFilecoinLogic = (canisterId = "w36hm-eqaaa-aaaal-qr76a-ca
         messages: transformedMessages
       };
 
-      console.log("Chat request being sent:", chatRequest);
+      console.log("Chat request being sent to canister:", chatRequest);
       const response = await llmActor.v0_chat(chatRequest);
-      console.log("Chat response:", response);
+      console.log("Raw chat response from canister:", response);
+      
+      // Handle both real canister response (direct string) and mock response (complex object)
+      let assistantContent: string;
+      
+      if (typeof response === 'string') {
+        // Real canister returns IDL.Text directly
+        assistantContent = response;
+        console.log('✅ Real canister response received:', assistantContent);
+      } else if (response.Ok?.choices?.[0]?.message?.content) {
+        // Mock response format
+        assistantContent = response.Ok.choices[0].message.content;
+        console.log('🤖 Mock response received:', assistantContent);
+      } else {
+        console.error('❌ Unexpected response format:', response);
+        throw new Error('Unexpected response format from canister');
+      }
       
       // Add assistant response to current session
-      if (response.Ok?.choices?.[0]?.message?.content && currentSession) {
+      if (assistantContent && currentSession) {
         const assistantMessage: Message = {
           role: 'assistant',
-          content: response.Ok.choices[0].message.content,
+          content: assistantContent,
           timestamp: new Date().toISOString(),
           id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
         };
